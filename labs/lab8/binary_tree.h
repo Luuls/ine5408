@@ -58,13 +58,38 @@ private:
             }
         }
 
-        bool remove(const T& data_) {
-            if (left != nullptr) {
-                if (data_ == left->data) {
-                    if (left->left != nullptr && left->right != nullptr) {
-
+        Node* remove(const T& data_, Node** root) {
+            if (data_ == data) {
+                if (left == nullptr && right == nullptr) {
+                    delete this;
+                    return nullptr;
+                } else if (left == nullptr) {
+                    Node* toReturn = right;
+                    delete this;
+                    return toReturn;
+                } else if (right == nullptr) {
+                    Node* toReturn = left;
+                    delete this;
+                    return toReturn;
+                } else {
+                    Node* toReturn = right;
+                    while (toReturn->left != nullptr) {
+                        toReturn = toReturn->left;
                     }
+                    data = toReturn->data;
+                    right = right->remove(data, &right);
+                    return this;
                 }
+            } else if (data_ < data) {
+                if (left != nullptr) {
+                    left = left->remove(data_, &left);
+                }
+                return this;
+            } else {  // data_ > data
+                if (right != nullptr) {
+                    right = right->remove(data_, &right);
+                }
+                return this;
             }
         }
 
@@ -168,7 +193,7 @@ void structures::BinaryTree<T>::remove(const T& data) {
         throw std::runtime_error("Trying to remove from empty tree");
     }
 
-    if (root->remove(data)) {
+    if (root->remove(data, &root) != nullptr) {
         size_--;
     }
 }
