@@ -2,8 +2,6 @@
 
 #include "array_list.h"
 
-#include <iostream>
-
 
 namespace structures {
 
